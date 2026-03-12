@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { authAPI, transactionsAPI, categoriesAPI } from '../api';
+import { authAPI, transactionsAPI, categoriesAPI, budgetsAPI } from '../api';
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -97,5 +97,39 @@ export const useCategoryStore = create((set) => ({
     const { data } = await categoriesAPI.create(category);
     set((state) => ({ categories: [...state.categories, data] }));
     return data;
+  },
+}));
+
+export const useBudgetStore = create((set) => ({
+  budgets: [],
+  alerts: [],
+  loading: false,
+  
+  fetchBudgets: async (month, year) => {
+    set({ loading: true });
+    try {
+      const { data } = await budgetsAPI.getAll({ month, year });
+      set({ budgets: data });
+    } finally {
+      set({ loading: false });
+    }
+  },
+  
+  fetchAlerts: async (month, year) => {
+    const { data } = await budgetsAPI.getAlerts({ month, year });
+    set({ alerts: data });
+  },
+  
+  addBudget: async (budget) => {
+    const { data } = await budgetsAPI.create(budget);
+    set((state) => ({ budgets: [...state.budgets, data] }));
+    return data;
+  },
+  
+  deleteBudget: async (id) => {
+    await budgetsAPI.delete(id);
+    set((state) => ({
+      budgets: state.budgets.filter((b) => b.id !== id),
+    }));
   },
 }));

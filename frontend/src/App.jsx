@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import AddTransaction from './pages/AddTransaction';
 import TransactionsPage from './pages/TransactionsPage';
 import CategoriesPage from './pages/CategoriesPage';
+import BudgetsPage from './pages/BudgetsPage';
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuthStore();
@@ -45,6 +46,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CategoriesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/budgets"
+          element={
+            <ProtectedRoute>
+              <BudgetsPage />
             </ProtectedRoute>
           }
         />

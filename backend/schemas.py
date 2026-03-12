@@ -52,3 +52,27 @@ class TransactionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class BudgetCreate(BaseModel):
+    amount: float
+    category_id: Optional[int] = None  # null = 總預算
+    month: int
+    year: int
+
+class BudgetResponse(BaseModel):
+    id: int
+    amount: float
+    category_id: Optional[int]
+    month: int
+    year: int
+    category: Optional[CategoryResponse] = None
+
+    class Config:
+        from_attributes = True
+
+class BudgetWithAlert(BaseModel):
+    budget: BudgetResponse
+    spent: float
+    remaining: float
+    percent: float
+    is_over: bool

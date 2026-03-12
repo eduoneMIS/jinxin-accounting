@@ -36,4 +36,11 @@ export const categoriesAPI = {
   delete: (id) => api.delete(`/api/categories/${id}`),
 };
 
+export const budgetsAPI = {
+  getAll: (params) => api.get('/api/budgets/', { params }),
+  create: (data) => api.post('/api/budgets/', data),
+  delete: (id) => api.delete(`/api/budgets/${id}`),
+  getAlerts: (params) => api.get('/api/budgets/alerts', { params }),
+};
+
 export default api;
