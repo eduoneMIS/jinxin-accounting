@@ -6,6 +6,7 @@ import AddTransaction from './pages/AddTransaction';
 import TransactionsPage from './pages/TransactionsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import BudgetsPage from './pages/BudgetsPage';
+import RecurringPage from './pages/RecurringPage';
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuthStore();
@@ -54,6 +55,14 @@ function App() {
           element={
             <ProtectedRoute>
               <BudgetsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recurring"
+          element={
+            <ProtectedRoute>
+              <RecurringPage />
             </ProtectedRoute>
           }
         />

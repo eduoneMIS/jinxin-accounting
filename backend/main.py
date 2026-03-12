@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
-from routers import auth, transactions, categories, budgets
+from routers import auth, transactions, categories, budgets, recurring
 
 app = FastAPI(title="金鑫記帳 API")
 
@@ -19,6 +19,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["認證"])
 app.include_router(transactions.router, prefix="/api/transactions", tags=["收支"])
 app.include_router(categories.router, prefix="/api/categories", tags=["分類"])
 app.include_router(budgets.router, prefix="/api/budgets", tags=["預算"])
+app.include_router(recurring.router, prefix="/api/recurring", tags=["定期支出"])
 
 @app.get("/")
 def root():

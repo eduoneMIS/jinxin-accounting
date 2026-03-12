@@ -4,8 +4,10 @@ import { useTransactionStore } from '../stores';
 
 export default function TransactionsPage() {
   const navigate = useNavigate();
-  const { transactions, fetchTransactions, deleteTransaction, loading } = useTransactionStore();
+  const { transactions, fetchTransactions, deleteTransaction, exportCSV, loading } = useTransactionStore();
   const [filter, setFilter] = useState('all');
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     fetchTransactions();
@@ -47,6 +49,28 @@ export default function TransactionsPage() {
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-4">
+        {/* Filter */}
+        <div className="flex gap-2 mb-4">
+          <button
+            onClick={() => navigate('/add')}
+            className="text-blue-600 font-medium"
+          >
+            新增
+          </button>
+          <button
+            onClick={() => navigate('/recurring')}
+            className="text-purple-600 font-medium"
+          >
+            定期
+          </button>
+          <button
+            onClick={() => exportCSV(selectedYear, selectedMonth)}
+            className="text-green-600 font-medium ml-auto"
+          >
+            📥 匯出
+          </button>
+        </div>
+
         {/* Filter */}
         <div className="flex gap-2 mb-4">
           {['all', 'income', 'expense'].map((f) => (

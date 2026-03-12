@@ -137,3 +137,46 @@ def get_monthly_summary(
         "expense": expense,
         "balance": income - expense
     }
+
+@router.get("/export/csv")
+def export_csv(
+    year: int = None,
+    month: int = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    import csv
+    from io import StringIO
+    from fastapi.responses import StreamingResponse
+    
+    query = db.query(Transaction).filter(Transaction.user_id == current_user.id)
+    
+    if year and month:
+        start_date = datetime(year, month, 1)
+        if month == 12:
+            end_date = datetime(year + 1, 1, 1)
+        else:
+            end_date = datetime(year, month + 1, 1)
+        query = query.filter(Transaction.date >= start_date, Transaction.date < end_date)
+    
+    transactions = query.order_by(Transaction.date.desc()).all()
+    
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['日期', '類型', '分類', '金額', '說明'])
+    
+    for t in transactions:
+        writer.writerow([
+            t.date.strftime('%Y-%m-%d'),
+            '收入' if t.type == 'income' else '支出',
+            t.category.name if t.category else '',
+            t.amount,
+            t.description
+        ])
+    
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=transactions_{year}_{month}.csv"}
+    )

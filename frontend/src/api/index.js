@@ -27,6 +27,7 @@ export const transactionsAPI = {
   update: (id, data) => api.put(`/api/transactions/${id}`, data),
   delete: (id) => api.delete(`/api/transactions/${id}`),
   getSummary: (params) => api.get('/api/transactions/summary/monthly', { params }),
+  exportCSV: (params) => api.get('/api/transactions/export/csv', { params, responseType: 'blob' }),
 };
 
 export const categoriesAPI = {
@@ -41,6 +42,14 @@ export const budgetsAPI = {
   create: (data) => api.post('/api/budgets/', data),
   delete: (id) => api.delete(`/api/budgets/${id}`),
   getAlerts: (params) => api.get('/api/budgets/alerts', { params }),
+};
+
+export const recurringAPI = {
+  getAll: (activeOnly = true) => api.get('/api/recurring/', { params: { active_only: activeOnly } }),
+  create: (data) => api.post('/api/recurring/', data),
+  toggle: (id) => api.put(`/api/recurring/${id}/toggle`),
+  execute: (id) => api.post(`/api/recurring/${id}/execute`),
+  delete: (id) => api.delete(`/api/recurring/${id}`),
 };
 
 export default api;

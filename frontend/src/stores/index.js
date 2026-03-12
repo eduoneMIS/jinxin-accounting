@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { authAPI, transactionsAPI, categoriesAPI, budgetsAPI } from '../api';
+import { authAPI, transactionsAPI, categoriesAPI, budgetsAPI, recurringAPI } from '../api';
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -77,6 +77,17 @@ export const useTransactionStore = create((set, get) => ({
       transactions: state.transactions.filter((t) => t.id !== id),
     }));
   },
+  
+  exportCSV: async (year, month) => {
+    const { data } = await transactionsAPI.exportCSV({ year, month });
+    const url = window.URL.createObjectURL(new Blob([data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `transactions_${year}_${month}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  },
 }));
 
 export const useCategoryStore = create((set) => ({
@@ -130,6 +141,47 @@ export const useBudgetStore = create((set) => ({
     await budgetsAPI.delete(id);
     set((state) => ({
       budgets: state.budgets.filter((b) => b.id !== id),
+    }));
+  },
+}));
+
+export const useRecurringStore = create((set) => ({
+  recurring: [],
+  loading: false,
+  
+  fetchRecurring: async (activeOnly = true) => {
+    set({ loading: true });
+    try {
+      const { data } = await recurringAPI.getAll(activeOnly);
+      set({ recurring: data });
+    } finally {
+      set({ loading: false });
+    }
+  },
+  
+  addRecurring: async (recurring) => {
+    const { data } = await recurringAPI.create(recurring);
+    set((state) => ({ recurring: [...state.recurring, data] }));
+    return data;
+  },
+  
+  toggleRecurring: async (id) => {
+    const { data } = await recurringAPI.toggle(id);
+    set((state) => ({
+      recurring: state.recurring.map((r) => 
+        r.id === id ? { ...r, is_active: data.is_active } : r
+      ),
+    }));
+  },
+  
+  executeRecurring: async (id) => {
+    await recurringAPI.execute(id);
+  },
+  
+  deleteRecurring: async (id) => {
+    await recurringAPI.delete(id);
+    set((state) => ({
+      recurring: state.recurring.filter((r) => r.id !== id),
     }));
   },
 }));

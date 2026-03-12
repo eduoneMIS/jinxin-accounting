@@ -55,7 +55,7 @@ class TransactionResponse(BaseModel):
 
 class BudgetCreate(BaseModel):
     amount: float
-    category_id: Optional[int] = None  # null = 總預算
+    category_id: Optional[int] = None
     month: int
     year: int
 
@@ -76,3 +76,26 @@ class BudgetWithAlert(BaseModel):
     remaining: float
     percent: float
     is_over: bool
+
+class RecurringCreate(BaseModel):
+    amount: float
+    description: str
+    type: str
+    category_id: int
+    frequency: str  # "daily", "weekly", "monthly", "yearly"
+    start_date: datetime
+
+class RecurringResponse(BaseModel):
+    id: int
+    amount: float
+    description: str
+    type: str
+    category_id: int
+    frequency: str
+    start_date: datetime
+    next_date: datetime
+    is_active: bool
+    category: Optional[CategoryResponse] = None
+
+    class Config:
+        from_attributes = True

@@ -165,7 +165,7 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
           <button
             onClick={() => navigate('/add')}
             className="bg-green-600 text-white py-4 rounded-xl font-medium hover:bg-green-700 transition-colors"
@@ -191,8 +191,14 @@ export default function Dashboard() {
             💸 預算
           </button>
           <button
-            onClick={() => navigate('/categories')}
+            onClick={() => navigate('/recurring')}
             className="bg-purple-600 text-white py-4 rounded-xl font-medium hover:bg-purple-700 transition-colors"
+          >
+            🔄 定期
+          </button>
+          <button
+            onClick={() => navigate('/categories')}
+            className="bg-gray-600 text-white py-4 rounded-xl font-medium hover:bg-gray-700 transition-colors"
           >
             📁 分類
           </button>
